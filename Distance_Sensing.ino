@@ -6,6 +6,7 @@ Servo rightMotor;
 
 // constants 
 const int buttonPin = 2;
+const int ledPin = 7;
 
 const int serialPeriod = 250;       // only print to the serial console every 1/4 second
 unsigned long timeSerialDelay = 0;
@@ -31,8 +32,9 @@ int buttonState = 0;
 void setup()
 {
     Serial.begin(9600);
-    // button pin
+    // Pins
     pinMode(buttonPin, INPUT);
+    pinMode(ledPin, OUTPUT);
     
     // ultrasonic sensor pin configurations
     pinMode(ultrasonicTrigPin, OUTPUT);
@@ -46,7 +48,7 @@ void setup()
 
 void loop()
 {
-    debugOutput(); // prints debugging messages to the serial monitor
+    showDistance(); // prints debugging messages to the serial monitor
     
     killSwitch(); //check kill switch
     
@@ -106,10 +108,14 @@ void driveAround()
             // drive forward
             rightMotor.write(180);
             leftMotor.write(0);
+            digitalWrite(ledPin, LOW); // turn off LED
+            Serial.println("No obstacle detected: move forward");
         }
         else // there's an object in front of us
         {
             state = TURN_LEFT;
+            digitalWrite(ledPin, HIGH); // turn ON LED
+            Serial.println("Obstacle detected: turn left");
         }
     }
     else if(state == TURN_LEFT) // obstacle detected -- turn left
@@ -136,7 +142,7 @@ void readUltrasonicSensors()
     delayMicroseconds(10);                  // must keep the trig pin high for at least 10µs
     digitalWrite(ultrasonicTrigPin, LOW);
     
-    // to get a distance measurement, measure the amount of time the sensor sends a HIGH signal (object in front)
+    // To get a distance measurement, measure the amount of time the sensor sends a HIGH signal (object in front)
     // divide by 2 to get the time it took the ping to get to the object (half the round trip time)
     // then divide by the speed of sound, at 20 Celsius is 343 metres/sec, ~29 µs/cm 
     ultrasonicDuration = pulseIn(ultrasonicEchoPin, HIGH);
@@ -144,7 +150,7 @@ void readUltrasonicSensors()
 }
 
 
-void debugOutput()
+void showDistance()
 {
   // output the distance in cm to the serial monitor
     if((millis() - timeSerialDelay) > serialPeriod)
