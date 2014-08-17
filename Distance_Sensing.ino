@@ -1,34 +1,39 @@
+#define DRIVE_FORWARD     0
+#define TURN_LEFT         1
+
+//------------------------------------------------------------------------------
+// INCLUDES
+//------------------------------------------------------------------------------
 #include <Servo.h>
 
-// create servo objects
+//------------------------------------------------------------------------------
+// GLOBALS - variables used all over the program
+//------------------------------------------------------------------------------
+
 Servo leftMotor;
 Servo rightMotor;
 
-// constants 
 const int buttonPin = 2;
 const int ledPin = 7;
 
 const int serialPeriod = 250;       // only print to the serial console every 1/4 second
 unsigned long timeSerialDelay = 0;
-
 const int loopPeriod = 20;          // a period of 20ms = a frequency of 50Hz
 unsigned long timeLoopDelay   = 0;
 
-// specify the trig & echo pins used for the ultrasonic sensors
 const int ultrasonicTrigPin = 8;
 const int ultrasonicEchoPin = 9;
 
 int ultrasonicDistance;
 int ultrasonicDuration;
 
-// define the states
-#define DRIVE_FORWARD     0
-#define TURN_LEFT         1
-
-int state = DRIVE_FORWARD; // 0 = drive forward (DEFAULT), 1 = turn left
-
+int state = DRIVE_FORWARD;          // 0 = drive forward (DEFAULT), 1 = turn left
 int buttonState = 0;
 
+
+//------------------------------------------------------------------------------
+// METHODS
+//------------------------------------------------------------------------------
 void setup()
 {
     Serial.begin(9600);
